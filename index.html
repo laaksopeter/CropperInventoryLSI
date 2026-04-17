@@ -12,7 +12,7 @@
         <div id="auth-container" class="card">
             <div class="header">
                 <h1>Cropper Inventory</h1>
-                <p>Manufacturing Resource Tracking</p>
+                <p>Manufacturing Asset Tracking</p>
             </div>
             <button id="login-btn" class="btn-primary">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20">
@@ -23,7 +23,7 @@
         <div id="inventory-ui" class="card" style="display:none;">
             <div class="header">
                 <h2 id="user-greeting">Welcome</h2>
-                <span class="status-badge">System Active</span>
+                <span class="status-badge">Live Inventory</span>
             </div>
             
             <form id="material-form">
@@ -42,27 +42,32 @@
                 </div>
 
                 <div class="input-group">
+                    <label for="sheet-size">Size (W x L)</label>
+                    <input type="text" id="sheet-size" placeholder="e.g. 48 x 96" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="thickness">Thickness</label>
+                    <input type="text" id="thickness" placeholder="e.g. 0.250" required>
+                </div>
+
+                <div class="input-group">
                     <label for="cert-num">Cert Number</label>
-                    <input type="text" id="cert-num" placeholder="e.g. C-12345" required>
+                    <input type="text" id="cert-num" placeholder="e.g. C-88234" required>
                 </div>
 
                 <div class="input-group">
-                    <label for="sheet-size">Sheet Size</label>
-                    <input type="text" id="sheet-size" placeholder="e.g. 0.25 x 48 x 96" required>
+                    <label for="location">Location (Rack/Bin)</label>
+                    <input type="text" id="location" placeholder="e.g. Rack B-2" required>
                 </div>
 
-                <div class="input-group">
-                    <label for="mat-qty">Quantity (+ to add, - to sub)</label>
-                    <input type="number" id="mat-qty" placeholder="e.g. 1" required>
-                </div>
-
-                <button type="submit" id="submit-btn" class="btn-submit">Add New Sheet</button>
+                <button type="submit" id="submit-btn" class="btn-submit">Add to Inventory</button>
             </form>
 
-            <div id="stock-view" style="margin-top: 2rem; border-top: 2px solid #e2e8f0; padding-top: 1rem;">
-                <h3 style="font-size: 1rem; margin-bottom: 10px;">Available Stock</h3>
+            <div id="stock-view" style="margin-top: 2rem; border-top: 1px solid #e2e8f0; padding-top: 1rem;">
+                <h3 style="font-size: 1rem; margin-bottom: 10px;">Available Sheets</h3>
                 <div id="inventory-list" class="inventory-grid">
-                    <p class="footer-note">Select a grade above to view inventory.</p>
+                    <p class="footer-note">Select a grade above to view stock.</p>
                 </div>
             </div>
         </div>

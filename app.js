@@ -11,13 +11,14 @@ const firebaseConfig = {
   measurementId: "G-PJB6W71DX7"
 };
 
+// Ensure this is your current /exec URL from Google Apps Script
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxCN5wNS4lslN4CgL1FUy22_0SJB7yQsGAh12DzhJydYFC2kC9pA6cEgSFXn8SmoZdm/exec";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// DOM elements
+// UI Elements
 const loginBtn = document.getElementById('login-btn');
 const inventoryUI = document.getElementById('inventory-ui');
 const authContainer = document.getElementById('auth-container');
@@ -40,85 +41,84 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// Load stock from Google Sheets
+// Load Stock List
 async function loadInventory(grade) {
-    inventoryList.innerHTML = "<p class='footer-note'>Loading inventory...</p>";
+    inventoryList.innerHTML = "<p class='footer-note'>Refreshing stock...</p>";
     try {
         const response = await fetch(`${SCRIPT_URL}?grade=${grade}`);
         const stock = await response.json();
         
-        // Calculate current stock levels by Unique ID
-        const totals = {};
-        const meta = {};
-        stock.forEach(entry => {
-            totals[entry.id] = (totals[entry.id] || 0) + Number(entry.qty);
-            meta[entry.id] = { cert: entry.cert, size: entry.size };
-        });
-
         inventoryList.innerHTML = "";
-        let hasStock = false;
+        if (stock.length === 0) {
+            inventoryList.innerHTML = "<p class='footer-note'>No sheets in stock.</p>";
+            return;
+        }
 
-        Object.keys(totals).forEach(id => {
-            if (totals[id] > 0) {
-                hasStock = true;
-                const div = document.createElement('div');
-                div.className = "stock-item";
-                div.innerHTML = `
-                    <div>
-                        <strong>${meta[id].size}</strong><br>
-                        <small>Cert: ${meta[id].cert} | ID: ${id}</small>
-                    </div>
-                    <button class="btn-use" onclick="window.useSheet('${id}', '${meta[id].cert}', '${meta[id].size}')">USE</button>
-                `;
-                inventoryList.appendChild(div);
-            }
+        stock.forEach(item => {
+            const div = document.createElement('div');
+            div.className = "stock-item";
+            div.innerHTML = `
+                <div>
+                    <strong>${item.thickness}" x ${item.size}</strong><br>
+                    <small>Cert: ${item.cert} | Loc: ${item.loc}</small><br>
+                    <small style="color:var(--primary)">ID: ${item.id}</small>
+                </div>
+                <button class="btn-use" onclick="window.useSheet('${item.id}')">USE</button>
+            `;
+            inventoryList.appendChild(div);
         });
-
-        if (!hasStock) inventoryList.innerHTML = "<p class='footer-note'>No items in stock.</p>";
     } catch (err) {
-        inventoryList.innerHTML = "<p class='footer-note'>Error loading stock.</p>";
+        inventoryList.innerHTML = "<p class='footer-note'>Error loading inventory.</p>";
     }
 }
 
-// Global function for the USE button
-window.useSheet = async (id, cert, size) => {
-    if (!confirm(`Mark ${size} (ID: ${id}) as used?`)) return;
-    
-    const data = {
-        item: materialSelect.value,
-        cert: cert,
-        size: size,
-        qty: -1,
-        id: id,
-        user: auth.currentUser.email
-    };
+// "Use" Function (Deletes from Sheet)
+window.useSheet = async (id) => {
+    const grade = materialSelect.value;
+    if (!confirm(`Confirm removal of sheet ${id}?`)) return;
 
-    await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-    alert("Sheet removed from inventory.");
-    loadInventory(materialSelect.value);
+    try {
+        await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({ action: "DELETE", id: id, item: grade })
+        });
+        alert("Sheet removed.");
+        loadInventory(grade);
+    } catch (err) {
+        alert("Error removing sheet.");
+    }
 };
 
 materialSelect.onchange = (e) => loadInventory(e.target.value);
 
+// Add Function (Appends to Sheet)
 form.onsubmit = async (e) => {
     e.preventDefault();
     submitBtn.innerText = "Syncing...";
     submitBtn.disabled = true;
 
-    const randomId = "SH-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+    const id = "SH-" + Math.random().toString(36).substr(2, 4).toUpperCase();
     const data = {
+        action: "ADD",
+        id: id,
         item: materialSelect.value,
-        cert: document.getElementById('cert-num').value,
         size: document.getElementById('sheet-size').value,
-        qty: document.getElementById('mat-qty').value,
-        id: randomId,
+        thickness: document.getElementById('thickness').value,
+        cert: document.getElementById('cert-num').value,
+        loc: document.getElementById('location').value,
         user: auth.currentUser.email
     };
 
-    await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-    alert(`Success! Logged ID: ${randomId}`);
-    form.reset();
-    submitBtn.innerText = "Add New Sheet";
-    submitBtn.disabled = false;
-    loadInventory(data.item);
+    try {
+        await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
+        alert(`Success! ID: ${id} added to ${data.item}`);
+        form.reset();
+        loadInventory(data.item);
+    } catch (err) {
+        alert("Error adding sheet.");
+    } finally {
+        submitBtn.innerText = "Add to Inventory";
+        submitBtn.disabled = false;
+    }
 };
