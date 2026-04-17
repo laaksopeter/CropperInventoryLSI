@@ -1,8 +1,6 @@
-// Use CDN imports for GitHub Pages (No build tool needed)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// Your verified Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAcxV21wY94f-t7v1SiboA-LqajhrdA2qQ",
   authDomain: "cropperiventorylsi.firebaseapp.com",
@@ -13,31 +11,22 @@ const firebaseConfig = {
   measurementId: "G-PJB6W71DX7"
 };
 
+// PASTE YOUR ACTUAL GOOGLE WEB APP URL HERE (Ends in /exec)
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxCN5wNS4lslN4CgL1FUy22_0SJB7yQsGAh12DzhJydYFC2kC9pA6cEgSFXn8SmoZdm/exec";
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// DOM Elements
 const loginBtn = document.getElementById('login-btn');
 const inventoryUI = document.getElementById('inventory-ui');
 const authContainer = document.getElementById('auth-container');
 const form = document.getElementById('material-form');
 const userGreeting = document.getElementById('user-greeting');
+const submitBtn = document.getElementById('submit-btn');
 
-// 1. Logic to Login
-loginBtn.onclick = async () => {
-    try {
-        await signInWithPopup(auth, provider);
-    } catch (error) {
-        console.error("Login Error:", error);
-        alert("Login failed! Check if Google Sign-in is enabled in Firebase Console.");
-    }
-};
+loginBtn.onclick = () => signInWithPopup(auth, provider);
 
-// 2. Logic to Show/Hide UI based on Login
 onAuthStateChanged(auth, (user) => {
     if (user) {
         authContainer.style.display = 'none';
@@ -49,28 +38,39 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// 3. Logic to Send Data to Google Sheet
 form.onsubmit = async (e) => {
     e.preventDefault();
     
+    // UI Feedback
+    submitBtn.innerText = "Syncing...";
+    submitBtn.disabled = true;
+
+    // Generate Randomized Tracking ID
+    const randomId = "SH-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+    
     const data = {
         item: document.getElementById('mat-name').value,
+        cert: document.getElementById('cert-num').value,
+        size: document.getElementById('sheet-size').value,
         qty: document.getElementById('mat-qty').value,
+        id: randomId,
         user: auth.currentUser.email
     };
 
     try {
-        // Send to Google Sheets
         await fetch(SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors', 
             body: JSON.stringify(data)
         });
 
-        alert("Inventory Updated in Sheet!");
+        alert(`Success! Logged ID: ${randomId}`);
         form.reset();
     } catch (err) {
-        console.error("Sheet Error:", err);
-        alert("Could not update Google Sheet.");
+        console.error("Sync Error:", err);
+        alert("Failed to connect to Sheet.");
+    } finally {
+        submitBtn.innerText = "Log Sheet Entry";
+        submitBtn.disabled = false;
     }
 };

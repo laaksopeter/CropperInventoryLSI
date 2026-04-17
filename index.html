@@ -15,7 +15,7 @@
                 <p>Manufacturing Resource Tracking</p>
             </div>
             <button id="login-btn" class="btn-primary">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20">
                 Sign in with Google
             </button>
         </div>
@@ -23,26 +23,43 @@
         <div id="inventory-ui" class="card" style="display:none;">
             <div class="header">
                 <h2 id="user-greeting">Welcome</h2>
-                <span class="status-badge">System Online</span>
+                <span class="status-badge">Live Sync Active</span>
             </div>
             
             <form id="material-form">
                 <div class="input-group">
-                    <label for="mat-name">Material / Part Name</label>
-                    <input type="text" id="mat-name" placeholder="e.g. 1/4 inch Steel Plate" required>
+                    <label for="mat-name">Material Grade</label>
+                    <select id="mat-name" required>
+                        <option value="" disabled selected>Select Grade...</option>
+                        <option value="A1011">A1011 (HR)</option>
+                        <option value="A1008">A1008 (CR)</option>
+                        <option value="A36">A36 (Steel)</option>
+                        <option value="5052">5052 (Alum)</option>
+                        <option value="6061">6061 (Alum)</option>
+                        <option value="304">304 (SS)</option>
+                        <option value="316">316 (SS)</option>
+                    </select>
                 </div>
 
                 <div class="input-group">
-                    <label for="mat-qty">Quantity Adjustment</label>
-                    <input type="number" id="mat-qty" placeholder="e.g. -5 or 10" required>
+                    <label for="cert-num">Cert Number</label>
+                    <input type="text" id="cert-num" placeholder="e.g. C-12345" required>
                 </div>
 
-                <button type="submit" class="btn-submit">Update Log</button>
+                <div class="input-group">
+                    <label for="sheet-size">Sheet Size</label>
+                    <input type="text" id="sheet-size" placeholder="e.g. 0.25 x 48 x 96" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="mat-qty">Quantity (+ to add, - to sub)</label>
+                    <input type="number" id="mat-qty" placeholder="e.g. 1" required>
+                </div>
+
+                <button type="submit" id="submit-btn" class="btn-submit">Log Sheet Entry</button>
             </form>
             
-            <div class="footer-note">
-                Updates are synced directly to the master Google Sheet.
-            </div>
+            <p class="footer-note">Specific Tracking ID will be generated automatically.</p>
         </div>
     </div>
 
