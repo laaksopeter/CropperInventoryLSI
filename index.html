@@ -65,7 +65,12 @@
             </form>
 
             <div id="stock-view" style="margin-top: 2rem; border-top: 1px solid #e2e8f0; padding-top: 1rem;">
-                <h3 style="font-size: 1rem; margin-bottom: 10px;">Available Sheets</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 10px;">
+                    <h3 style="font-size: 1rem; white-space: nowrap;">Available Stock</h3>
+                    <input type="text" id="inventory-search" placeholder="Filter by size, cert, or loc..." 
+                           style="width: 100%; padding: 8px; font-size: 0.85rem; border: 1px solid var(--border); border-radius: 6px;">
+                </div>
+                
                 <div id="inventory-list" class="inventory-grid">
                     <p class="footer-note">Select a grade above to view stock.</p>
                 </div>
