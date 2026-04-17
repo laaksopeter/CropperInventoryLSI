@@ -13,8 +13,7 @@ const firebaseConfig = {
   measurementId: "G-PJB6W71DX7"
 };
 
-// !!! PASTE YOUR GOOGLE APPS SCRIPT URL HERE !!!
-const SCRIPT_URL = "YOUR_DEPLOYED_WEB_APP_URL";
+const SCRIPT_URL = "https://script.google.com/u/0/home/projects/1aB5UagsObeojw4SfoFuKTYfNTG5ilbcehrXs8TbNUTaUMJCkcdzzBxio/edit?pli=1";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
