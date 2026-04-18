@@ -31,6 +31,25 @@ const sheetGrades = ["A1008", "A1011", "A36", "5052", "5052 Filmed", "6061", "30
 const tubeShapes = ["Square", "Rectangle", "Round", "Angle", "Channel", "Bar"];
 const tubeMaterials = ["6061", "A513", "A500", "DOM", "4130", "Stainless", "Other"];
 
+/**
+ * Health Monitor Logic
+ */
+async function checkSystemHealth() {
+    const badge = document.querySelector('.status-badge');
+    try {
+        const response = await fetch(`${SCRIPT_URL}?grade=HEALTH_CHECK`);
+        if (response.ok) {
+            badge.innerText = "System Active";
+            badge.classList.remove('offline');
+        } else { throw new Error(); }
+    } catch (err) {
+        badge.innerText = "System Offline";
+        badge.classList.add('offline');
+    }
+}
+
+setInterval(checkSystemHealth, 30000);
+
 function setMode(mode) {
     currentMode = mode;
     inventoryList.innerHTML = "<p class='footer-note'>Select a category above.</p>";
@@ -70,9 +89,11 @@ logoutBtn.onclick = () => { if (confirm("Log out?")) signOut(auth); };
 
 onAuthStateChanged(auth, (user) => {
     document.getElementById('auth-container').style.display = user ? 'none' : 'block';
-    // Clear display to let CSS Media Query handle flex vs block
     document.getElementById('inventory-ui').style.display = user ? '' : 'none';
-    if(user) document.getElementById('user-greeting').innerText = `Worker: ${user.displayName}`;
+    if(user) {
+        document.getElementById('user-greeting').innerText = `Worker: ${user.displayName}`;
+        checkSystemHealth();
+    }
 });
 
 async function loadInventory(category) {
@@ -90,46 +111,21 @@ function renderInventory(items) {
     const s2 = document.getElementById('search-2').value.toLowerCase();
     const s3 = document.getElementById('search-3').value.toLowerCase();
 
-    // FIXED FILTER LOGIC
     const filtered = items.filter(i => 
         i.thickness.toLowerCase().includes(s1) && 
         i.size.toLowerCase().includes(s2) &&
         (i.other_type || "").toLowerCase().includes(s3)
     );
 
-    if (filtered.length === 0) { 
-        inventoryList.innerHTML = "<p class='footer-note'>No items found.</p>"; 
-        return; 
-    }
+    if (filtered.length === 0) { inventoryList.innerHTML = "<p class='footer-note'>No items found.</p>"; return; }
 
     filtered.forEach(item => {
         const div = document.createElement('div');
         div.className = "stock-item";
-        
         if (currentMode === 'Sheet') {
-            div.innerHTML = `
-                <div style="flex: 1;">
-                    <div style="margin-bottom: 4px;"><strong>${item.thickness}" THICK</strong> | <span>${item.size}</span></div>
-                    <div style="font-size: 0.75rem;"><b>Mat:</b> ${item.other_type} | <b>Cert:</b> ${item.cert}</div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted);"><b>Loc:</b> ${item.loc} | <b>Notes:</b> ${item.other || "N/A"}</div>
-                    <div style="font-size: 0.7rem; color: var(--brand-orange); font-weight: 700; font-family: monospace;">ID: ${item.id}</div>
-                </div>
-                <button class="btn-use" onclick="window.useSheet('${item.id}')">USE</button>`;
+            div.innerHTML = `<div style="flex:1;"><div style="margin-bottom:4px;"><strong>${item.thickness}" THICK</strong> | <span>${item.size}</span></div><div style="font-size:0.75rem;"><b>Mat:</b> ${item.other_type} | <b>Cert:</b> ${item.cert}</div><div style="font-size:0.75rem; color:var(--text-muted);"><b>Loc:</b> ${item.loc} | <b>Notes:</b> ${item.other || "N/A"}</div><div style="font-size:0.7rem; color:var(--brand-orange); font-weight:700; font-family:monospace;">ID: ${item.id}</div></div><button class="btn-use" onclick="window.useSheet('${item.id}')">USE</button>`;
         } else {
-            div.innerHTML = `
-                <div style="width: 100%;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                        <strong>${item.size}" LONG</strong>
-                        <span style="background: var(--brand-black); color: white; padding: 2px 8px; border-radius: 3px; font-size: 0.7rem;">${item.other_type}</span>
-                    </div>
-                    <div style="margin-bottom: 8px;"><span style="color: var(--brand-orange); font-weight: 800;">${item.thickness}</span></div>
-                    <div style="border-top: 1px solid var(--brand-grey-light); padding-top: 8px; font-size: 0.75rem;">
-                        <div><b>Cert:</b> ${item.cert} | <b>Loc:</b> ${item.loc}</div>
-                        <div style="color: var(--text-muted);"><b>Notes:</b> ${item.other || "N/A"}</div>
-                        <div style="font-weight: 700; font-family: monospace;">ID: ${item.id}</div>
-                    </div>
-                </div>
-                <button class="btn-use" style="margin-left: 15px;" onclick="window.useSheet('${item.id}')">USE</button>`;
+            div.innerHTML = `<div style="width:100%"><div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong>${item.size}" LONG</strong><span style="background:var(--brand-black); color:white; padding:2px 8px; border-radius:3px; font-size:0.7rem;">${item.other_type}</span></div><div style="margin-bottom:8px;"><span style="color:var(--brand-orange); font-weight:800;">${item.thickness}</span></div><div style="border-top:1px solid var(--brand-grey-light); padding-top:8px; font-size:0.75rem;"><div><b>Cert:</b> ${item.cert} | <b>Loc:</b> ${item.loc}</div><div style="color:var(--text-muted);"><b>Notes:</b> ${item.other || "N/A"}</div><div style="font-weight:700; font-family:monospace;">ID: ${item.id}</div></div></div><button class="btn-use" style="margin-left:15px;" onclick="window.useSheet('${item.id}')">USE</button>`;
         }
         inventoryList.appendChild(div);
     });
