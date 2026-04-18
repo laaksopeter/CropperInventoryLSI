@@ -15,6 +15,9 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxCN5wNS4lslN4CgL1FU
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+provider.setCustomParameters({
+  prompt: 'select_account'
+});
 
 const matSelect = document.getElementById('mat-name'); 
 const structTypeSelect = document.getElementById('struct-type');
