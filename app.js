@@ -111,13 +111,11 @@ function renderInventory(items) {
     inventoryList.innerHTML = "";
     const s1 = document.getElementById('search-1').value.toLowerCase();
     const s2 = document.getElementById('search-2').value.toLowerCase();
-    const s3 = document.getElementById('search-3').value.toLowerCase();
     const s4 = document.getElementById('search-4').value.toLowerCase();
 
     const filtered = items.filter(i => 
         i.thickness.toLowerCase().includes(s1) && 
         i.size.toLowerCase().includes(s2) &&
-        (i.other_type || "").toLowerCase().includes(s3) &&
         (i.cert || "").toLowerCase().includes(s4)
     );
 
@@ -135,7 +133,7 @@ function renderInventory(items) {
     });
 }
 
-['search-1', 'search-2', 'search-3', 'search-4'].forEach(id => {
+['search-1', 'search-2', 'search-4'].forEach(id => {
     document.getElementById(id).oninput = () => renderInventory(currentStock);
 });
 
