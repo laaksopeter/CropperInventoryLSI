@@ -23,7 +23,7 @@ body {
 .container { width: 100%; max-width: 460px; transition: max-width 0.4s ease; }
 
 .card {
-    background: var(--white); padding: 2.5rem 2rem; border-radius: 4px;
+    background: var(--white); padding: 2rem; border-radius: 4px;
     box-shadow: var(--shadow); border-top: 8px solid var(--brand-black);
     width: 100%;
 }
@@ -55,8 +55,8 @@ input, select { width: 100%; padding: 12px; border: 1px solid var(--brand-grey-b
     .container { max-width: 1250px; height: 90vh; display: flex; flex-direction: column; }
     .card { height: 100%; display: flex; flex-direction: column; }
     .dashboard-layout { flex-direction: row; flex: 1; overflow: hidden; }
-    #material-form { flex: 1; border-right: 2px solid var(--brand-grey-light); padding-right: 2.5rem; overflow-y: auto; height: 100%; }
-    #stock-view { flex: 1.8; display: flex; flex-direction: column; height: 100%; }
+    #material-form { flex: 1; border-right: 2px solid var(--brand-grey-light); padding-right: 2rem; overflow-y: auto; height: 100%; }
+    #stock-view { flex: 1.8; display: flex; flex-direction: column; height: 100%; padding-left: 1rem;}
     .inventory-grid { flex: 1; overflow-y: auto; margin-top: 10px; }
 }
 
@@ -64,8 +64,8 @@ input, select { width: 100%; padding: 12px; border: 1px solid var(--brand-grey-b
 .search-row input { flex: 1; padding: 8px; font-size: 0.75rem; border: 1px solid var(--brand-grey-border); border-radius: 4px; }
 
 .stock-item { 
-    display: flex; justify-content: space-between; align-items: center; padding: 15px; background: white; 
-    border: 1px solid var(--brand-grey-light); border-left: 4px solid var(--brand-black); margin-bottom: 8px; 
+    display: flex; justify-content: space-between; align-items: center; padding: 16px; background: white; 
+    border: 1px solid var(--brand-grey-border); border-left: 6px solid var(--brand-black); margin-bottom: 10px; 
 }
 .btn-use { background: var(--brand-black); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 700; font-size: 0.7rem; }
 .btn-logout { background: transparent; color: var(--text-muted); border: 1px solid var(--brand-grey-border); padding: 6px 12px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; }
