@@ -88,31 +88,6 @@ onAuthStateChanged(auth, (user) => {
     if(user) { document.getElementById('user-greeting').innerText = `Worker: ${user.displayName}`; checkSystemHealth(); }
 });
 
-// CSV IMPORT
-const fileInput = document.getElementById('csv-file');
-const importBtn = document.getElementById('import-btn');
-importBtn.onclick = () => fileInput.click();
-
-fileInput.onchange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-        const rows = event.target.result.split('\n').filter(r => r.trim() !== '');
-        if (!confirm(`Import ${rows.length} rows to ${matSelect.value}?`)) return;
-        importBtn.innerText = "Syncing Bulk...";
-        for (let line of rows) {
-            const c = line.split(',').map(v => v.trim());
-            if (c.length < 5) continue;
-            const id = (currentMode === 'Sheet' ? "SH-" : "ST-") + Math.random().toString(36).substr(2, 4).toUpperCase();
-            const data = { action: "ADD", id, item: matSelect.value, size: c[0], thickness: c[1], cert: c[2], loc: c[3], other: c[4] || "N/A", other_type: currentMode === 'Structural' ? (c[5] || "Other") : matSelect.value, user: auth.currentUser.email };
-            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-        }
-        alert("Bulk Sync Complete."); importBtn.innerText = "Upload CSV File"; loadInventory(matSelect.value);
-    };
-    reader.readAsText(file);
-};
-
 // LOAD & RENDER
 async function loadInventory(category) {
     inventoryList.innerHTML = "<p class='footer-note'>Querying system...</p>";
