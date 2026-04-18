@@ -31,13 +31,20 @@
                     <label for="mat-name">Material Grade</label>
                     <select id="mat-name" required>
                         <option value="" disabled selected>Select Grade...</option>
-                        <option value="A1011">A1011 (HR)</option>
                         <option value="A1008">A1008 (CR)</option>
+                        <option value="A1011">A1011 (HR)</option>
                         <option value="A36">A36 (Steel)</option>
                         <option value="5052">5052 (Alum)</option>
+                        <option value="5052 Filmed">5052 Filmed(Alum)</option>
                         <option value="6061">6061 (Alum)</option>
-                        <option value="304">304 (SS)</option>
-                        <option value="316">316 (SS)</option>
+                        <option value="304 #4">304 #4(SS)</option>
+                        <option value="304 #4 Filmed">304 #4 Filmed(SS)</option>
+                        <option value="304 2B">304 2B(SS)</option>
+                        <option value="304 2B Filmed">304 2B Filmed(SS)</option>
+                        <option value="316 #4">316 #4(SS)</option>
+                        <option value="316 #4 Filmed">316 #4 Filmed(SS)</option>
+                        <option value="316 2B">316 2B(SS)</option>
+                        <option value="316 2B Filmed">316 2B Filmed(SS)</option>
                     </select>
                 </div>
 
@@ -48,7 +55,7 @@
 
                 <div class="input-group">
                     <label for="thickness">Thickness</label>
-                    <input type="text" id="thickness" placeholder="e.g. 0.250" required>
+                    <input type="text" id="thickness" placeholder="e.g. Decimal or Gauge" required>
                 </div>
 
                 <div class="input-group">
@@ -76,7 +83,7 @@
     </div>
     
     <div id="inventory-list" class="inventory-grid">
-        <p class="footer-note">Select a grade above to view stock.</p>
+        <p class="footer-note">Select a material above to view stock.</p>
     </div>
 </div>
             </div>
