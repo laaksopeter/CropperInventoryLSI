@@ -14,12 +14,10 @@
                 <h1>LNI TERMINAL</h1>
                 <p>Laser North Inventory Control</p>
             </div>
-            
             <button id="login-btn">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
                 Sign in with Google
             </button>
-            
             <div style="margin-top: 40px; font-size: 0.6rem; color: var(--text-muted); letter-spacing: 2px;">
                 AUTHORIZED PERSONNEL ONLY
             </div>
@@ -36,40 +34,36 @@
             
             <div class="dashboard-layout">
                 <form id="material-form">
-                    <div class="input-group">
-                        <label>Material Grade</label>
-                        <select id="mat-name" required>
-                            <option value="" disabled selected>Select Grade...</option>
-                            <option value="A1008">A1008 (CR)</option>
-                            <option value="A1011">A1011 (HR)</option>
-                            <option value="A36">A36 (Steel)</option>
-                            <option value="5052">5052 (Alum)</option>
-                            <option value="5052 Filmed">5052 Filmed(Alum)</option>
-                            <option value="6061">6061 (Alum)</option>
-                            <option value="304 #4">304 #4(SS)</option>
-                            <option value="304 #4 Filmed">304 #4 Filmed(SS)</option>
-                            <option value="304 2B">304 2B(SS)</option>
-                            <option value="304 2B Filmed">304 2B Filmed(SS)</option>
-                            <option value="316 #4">316 #4(SS)</option>
-                            <option value="316 #4 Filmed">316 #4 Filmed(SS)</option>
-                            <option value="316 2B">316 2B(SS)</option>
-                            <option value="316 2B Filmed">316 2B Filmed(SS)</option>
-                            <option value="Other">Other</option>
-                        </select>
+                    <div class="input-group" style="margin-bottom: 25px;">
+                        <label>Inventory Mode</label>
+                        <div style="display: flex; gap: 2px;">
+                            <button type="button" id="mode-sheet" class="btn-mode active">Sheet</button>
+                            <button type="button" id="mode-tube" class="btn-mode">Structural</button>
+                        </div>
                     </div>
 
                     <div class="input-group">
-                        <label>Size (W x L)</label>
-                        <input type="text" id="sheet-size" placeholder="48 x 96" required>
+                        <label id="label-grade">Material Grade</label>
+                        <select id="mat-name" required></select>
+                    </div>
+
+                    <div class="input-group" id="group-type" style="display:none;">
+                        <label id="label-sub-type">Material Type</label>
+                        <select id="struct-type"></select>
                     </div>
 
                     <div class="input-group">
-                        <label>Thickness</label>
-                        <input type="text" id="thickness" placeholder="0.250" required>
+                        <label id="label-dim">Thickness</label>
+                        <input type="text" id="dim-input" placeholder="e.g. 0.250" required>
                     </div>
 
                     <div class="input-group">
-                        <label>Cert Number</label>
+                        <label id="label-len">Size (W x L)</label>
+                        <input type="text" id="len-input" placeholder="e.g. 48 x 96" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Cert / Heat Number</label>
                         <input type="text" id="cert-num" placeholder="C-XXXXX" required>
                     </div>
 
@@ -87,15 +81,16 @@
                 </form>
 
                 <div id="stock-view">
-                    <h3 style="font-size: 0.85rem; margin-bottom: 15px; color: var(--brand-black); text-transform: uppercase; letter-spacing: 1px;">Live Stock View</h3>
+                    <h3 id="stock-view-title" style="font-size: 0.85rem; margin-bottom: 15px; color: var(--brand-black); text-transform: uppercase; letter-spacing: 1px;">Live Stock View</h3>
                     
-                    <div class="search-row" style="display: flex; gap: 10px; margin-bottom: 10px;">
-                        <input type="text" id="search-thickness" placeholder="Filter Thickness" style="width: 50%;">
-                        <input type="text" id="search-size" placeholder="Filter Size" style="width: 50%;">
+                    <div class="search-row">
+                        <input type="text" id="search-1" placeholder="Filt. Dim">
+                        <input type="text" id="search-2" placeholder="Filt. Size/Len">
+                        <input type="text" id="search-3" placeholder="Filt. Material">
                     </div>
                     
                     <div id="inventory-list" class="inventory-grid">
-                        <p class="footer-note">Select a grade above to pull live data.</p>
+                        <p class="footer-note">Select a category above to pull live data.</p>
                     </div>
                 </div>
             </div>
