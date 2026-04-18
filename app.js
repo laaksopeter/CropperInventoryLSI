@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAcxV21wY94f-t7v1SiboA-LqajhrdA2qQ",
@@ -19,6 +19,7 @@ const provider = new GoogleAuthProvider();
 
 // DOM Elements
 const loginBtn = document.getElementById('login-btn');
+const logoutBtn = document.getElementById('logout-btn');
 const inventoryUI = document.getElementById('inventory-ui');
 const authContainer = document.getElementById('auth-container');
 const form = document.getElementById('material-form');
@@ -31,13 +32,20 @@ const sizeSearch = document.getElementById('search-size');
 
 let currentStock = [];
 
+// Authentication Logic
 loginBtn.onclick = () => signInWithPopup(auth, provider);
+
+logoutBtn.onclick = () => {
+    if (confirm("Log out of LNI Terminal?")) {
+        signOut(auth);
+    }
+};
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
         authContainer.style.display = 'none';
         inventoryUI.style.display = 'block';
-        userGreeting.innerText = `Employee: ${user.displayName}`;
+        userGreeting.innerText = `Worker: ${user.displayName}`;
     } else {
         authContainer.style.display = 'block';
         inventoryUI.style.display = 'none';
@@ -72,7 +80,7 @@ function renderInventory(items) {
                 <strong>${item.thickness}" x ${item.size}</strong><br>
                 <small>Cert: ${item.cert} | Loc: ${item.loc}</small><br>
                 <small style="color:var(--text-muted)">Notes: ${item.other || "N/A"}</small><br>
-                <small style="color:var(--primary)">ID: ${item.id}</small>
+                <small style="color:var(--brand-orange); font-weight:700;">ID: ${item.id}</small>
             </div>
             <button class="btn-use" onclick="window.useSheet('${item.id}')">USE</button>
         `;

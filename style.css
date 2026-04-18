@@ -1,25 +1,25 @@
 :root {
     /* LNI Brand Palette */
-    --brand-orange: #f97316;    /* Safety Orange */
+    --brand-orange: #f97316;
     --brand-orange-hover: #ea580c;
-    --brand-black: #0f172a;     /* Deep Slate/Black */
-    --brand-grey-dark: #334155; /* Slate 700 */
+    --brand-black: #0f172a;
+    --brand-grey-dark: #334155;
     --brand-grey-light: #f1f5f9;
     
-    --bg-main: #e2e8f0;         /* Industrial Grey */
+    --bg-main: #e2e8f0;
     --text-main: #1e293b;
     --text-muted: #64748b;
     --border: #cbd5e1;
     --white: #ffffff;
     
-    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
     font-family: 'Inter', sans-serif;
-    background-color: var(--bg-main);
+    background: radial-gradient(circle at center, #334155 0%, #0f172a 100%);
     color: var(--text-main);
     display: flex;
     justify-content: center;
@@ -30,33 +30,50 @@ body {
 
 .container { width: 100%; max-width: 460px; }
 
-/* The Main Card */
+/* Main Card Logic */
 .card {
     background: var(--white);
     padding: 1.5rem;
-    border-radius: 4px; /* Sharper corners look more industrial */
+    border-radius: 4px;
     box-shadow: var(--shadow);
-    border-top: 6px solid var(--brand-black); /* Strong accent at top */
+    border-top: 8px solid var(--brand-black);
 }
 
-.header { margin-bottom: 24px; text-align: left; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-h1 { 
-    font-size: 1.25rem; 
-    text-transform: uppercase; 
-    letter-spacing: 0.05em; 
+/* LOGIN SPECIFIC (The Auth Container) */
+#auth-container {
+    text-align: center;
+    border-top-color: var(--brand-orange);
+    background: var(--brand-black);
+    color: white;
+}
+
+#auth-container h1 { color: var(--brand-orange); font-size: 1.75rem; margin-bottom: 8px; }
+#auth-container p { color: var(--border); margin-bottom: 30px; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; }
+
+#login-btn {
+    background: white;
     color: var(--brand-black);
+    padding: 14px;
+    border-radius: 6px;
+    font-weight: 700;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 100%;
 }
 
-/* Form Styling */
+#login-btn:hover { transform: translateY(-2px); background: var(--brand-grey-light); box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4); }
+
+/* MAIN APP UI */
+.header { margin-bottom: 24px; text-align: left; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+h1, h2 { text-transform: uppercase; letter-spacing: 0.05em; color: var(--brand-black); }
+
 .input-group { margin-bottom: 14px; }
-label { 
-    display: block; 
-    font-size: 0.75rem; 
-    font-weight: 700; 
-    margin-bottom: 4px; 
-    color: var(--brand-grey-dark);
-    text-transform: uppercase;
-}
+label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 4px; color: var(--brand-grey-dark); text-transform: uppercase; }
 
 input, select {
     width: 100%;
@@ -65,16 +82,10 @@ input, select {
     border-radius: 4px;
     font-size: 0.95rem;
     background-color: var(--brand-grey-light);
-    transition: all 0.2s;
 }
 
-input:focus {
-    outline: none;
-    border-color: var(--brand-orange);
-    background-color: #fff;
-}
+input:focus { outline: none; border-color: var(--brand-orange); background-color: #fff; }
 
-/* Primary "Add" Button */
 .btn-submit {
     width: 100%;
     padding: 14px;
@@ -85,13 +96,24 @@ input:focus {
     font-weight: 700;
     text-transform: uppercase;
     cursor: pointer;
-    margin-top: 10px;
-    transition: background 0.2s;
 }
 
 .btn-submit:hover { background: var(--brand-orange-hover); }
 
-/* Inventory Stock View */
+.btn-logout {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.btn-logout:hover { background: var(--brand-black); color: white; }
+
 .stock-item {
     display: flex;
     justify-content: space-between;
@@ -99,19 +121,12 @@ input:focus {
     padding: 12px;
     background: white;
     border: 1px solid var(--border);
-    border-left: 5px solid var(--brand-grey-dark); /* Color indicator */
+    border-left: 5px solid var(--brand-grey-dark);
     margin-bottom: 6px;
-    border-radius: 2px;
 }
 
-.stock-item:hover {
-    border-left-color: var(--brand-orange);
-}
+.stock-item:hover { border-left-color: var(--brand-orange); }
 
-.stock-item strong { color: var(--brand-black); font-size: 1rem; }
-.stock-item small { color: var(--text-muted); line-height: 1.4; }
-
-/* The "USE" Button */
 .btn-use {
     background: var(--brand-black);
     color: white;
@@ -126,22 +141,5 @@ input:focus {
 
 .btn-use:hover { background: var(--brand-orange); }
 
-.status-badge { 
-    background: var(--brand-grey-dark); 
-    color: white; 
-    font-size: 0.65rem; 
-    padding: 3px 8px; 
-    border-radius: 2px; 
-    font-weight: 700; 
-}
-
-.footer-note { font-size: 0.7rem; color: var(--text-muted); margin-top: 15px; }
-
-/* Search Inputs */
-#search-thickness, #search-size {
-    border: 2px solid var(--border);
-}
-
-#search-thickness:focus, #search-size:focus {
-    border-color: var(--brand-orange);
-}
+.status-badge { background: var(--brand-grey-dark); color: white; font-size: 0.65rem; padding: 3px 8px; border-radius: 2px; font-weight: 700; }
+.footer-note { font-size: 0.7rem; color: var(--text-muted); text-align: center; }
