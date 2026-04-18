@@ -66,11 +66,11 @@ modeTube.onclick = () => setMode('Structural');
 setMode('Sheet'); 
 
 loginBtn.onclick = () => signInWithPopup(auth, provider);
-logoutBtn.onclick = () => { if (confirm("Log out of LNI Terminal?")) signOut(auth); };
+logoutBtn.onclick = () => { if (confirm("Log out?")) signOut(auth); };
 
 onAuthStateChanged(auth, (user) => {
     document.getElementById('auth-container').style.display = user ? 'none' : 'block';
-    // Use empty string to let CSS media queries control display behavior
+    // Clear display to let CSS Media Query handle flex vs block
     document.getElementById('inventory-ui').style.display = user ? '' : 'none';
     if(user) document.getElementById('user-greeting').innerText = `Worker: ${user.displayName}`;
 });
@@ -81,7 +81,7 @@ async function loadInventory(category) {
         const response = await fetch(`${SCRIPT_URL}?grade=${category}`);
         currentStock = await response.json();
         renderInventory(currentStock);
-    } catch (err) { inventoryList.innerHTML = "<p class='footer-note'>Sync Error. Check network.</p>"; }
+    } catch (err) { inventoryList.innerHTML = "<p class='footer-note'>Sync Error.</p>"; }
 }
 
 function renderInventory(items) {
@@ -90,21 +90,46 @@ function renderInventory(items) {
     const s2 = document.getElementById('search-2').value.toLowerCase();
     const s3 = document.getElementById('search-3').value.toLowerCase();
 
+    // FIXED FILTER LOGIC
     const filtered = items.filter(i => 
         i.thickness.toLowerCase().includes(s1) && 
         i.size.toLowerCase().includes(s2) &&
         (i.other_type || "").toLowerCase().includes(s3)
     );
 
-    if (filtered.length === 0) { inventoryList.innerHTML = "<p class='footer-note'>No items found.</p>"; return; }
+    if (filtered.length === 0) { 
+        inventoryList.innerHTML = "<p class='footer-note'>No items found.</p>"; 
+        return; 
+    }
 
     filtered.forEach(item => {
         const div = document.createElement('div');
         div.className = "stock-item";
+        
         if (currentMode === 'Sheet') {
-            div.innerHTML = `<div><strong>${item.thickness}"</strong> | <span>${item.size}</span><br><small>Grade: ${item.other_type}</small></div><button class="btn-use" onclick="window.useSheet('${item.id}')">USE</button>`;
+            div.innerHTML = `
+                <div style="flex: 1;">
+                    <div style="margin-bottom: 4px;"><strong>${item.thickness}" THICK</strong> | <span>${item.size}</span></div>
+                    <div style="font-size: 0.75rem;"><b>Mat:</b> ${item.other_type} | <b>Cert:</b> ${item.cert}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);"><b>Loc:</b> ${item.loc} | <b>Notes:</b> ${item.other || "N/A"}</div>
+                    <div style="font-size: 0.7rem; color: var(--brand-orange); font-weight: 700; font-family: monospace;">ID: ${item.id}</div>
+                </div>
+                <button class="btn-use" onclick="window.useSheet('${item.id}')">USE</button>`;
         } else {
-            div.innerHTML = `<div style="width:100%"><div style="display:flex;justify-content:space-between"><strong>${item.size}" LONG</strong><span style="font-weight:bold">${item.other_type}</span></div><div><small>${item.thickness}</small></div></div><button class="btn-use" style="margin-left:10px" onclick="window.useSheet('${item.id}')">USE</button>`;
+            div.innerHTML = `
+                <div style="width: 100%;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <strong>${item.size}" LONG</strong>
+                        <span style="background: var(--brand-black); color: white; padding: 2px 8px; border-radius: 3px; font-size: 0.7rem;">${item.other_type}</span>
+                    </div>
+                    <div style="margin-bottom: 8px;"><span style="color: var(--brand-orange); font-weight: 800;">${item.thickness}</span></div>
+                    <div style="border-top: 1px solid var(--brand-grey-light); padding-top: 8px; font-size: 0.75rem;">
+                        <div><b>Cert:</b> ${item.cert} | <b>Loc:</b> ${item.loc}</div>
+                        <div style="color: var(--text-muted);"><b>Notes:</b> ${item.other || "N/A"}</div>
+                        <div style="font-weight: 700; font-family: monospace;">ID: ${item.id}</div>
+                    </div>
+                </div>
+                <button class="btn-use" style="margin-left: 15px;" onclick="window.useSheet('${item.id}')">USE</button>`;
         }
         inventoryList.appendChild(div);
     });
