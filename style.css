@@ -1,22 +1,31 @@
 :root {
     --brand-orange: #f97316;
     --brand-orange-hover: #ea580c;
-    --brand-black: #0f172a;
-    --brand-grey-dark: #334155;
-    --brand-grey-light: #f1f5f9;
-    --bg-main: #e2e8f0;
-    --text-main: #1e293b;
+    --brand-black: #020617;     
+    --brand-grey-dark: #1e293b; 
+    --brand-grey-border: #cbd5e1;
+    --brand-grey-light: #f8fafc;
+    --text-main: #0f172a;
     --text-muted: #64748b;
-    --border: #cbd5e1;
     --white: #ffffff;
-    --shadow: 0 4px 15px rgba(0,0,0,0.1);
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* PREVENT WHITE SCROLL GAPS */
+html {
+    background-color: var(--brand-grey-dark);
+    overscroll-behavior: none; /* Kills the Mac 'rubber-band' effect */
+}
+
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+}
 
 body {
     font-family: 'Inter', sans-serif;
-    background: radial-gradient(circle at center, #334155 0%, #0f172a 100%);
+    background-color: var(--brand-grey-dark); 
     min-height: 100vh;
     padding: 20px;
     display: flex;
@@ -26,41 +35,90 @@ body {
 
 .container { width: 100%; max-width: 460px; transition: max-width 0.4s ease; }
 
+/* Main Industrial Card */
 .card {
     background: var(--white);
-    padding: 1.5rem;
+    padding: 2.5rem 2rem;
     border-radius: 4px;
     box-shadow: var(--shadow);
     border-top: 8px solid var(--brand-black);
 }
 
-#auth-container { text-align: center; border-top-color: var(--brand-orange); background: var(--brand-black); color: white; }
-#login-btn { background: white; color: var(--brand-black); padding: 14px; border-radius: 6px; font-weight: 700; border: none; display: flex; align-items: center; justify-content: center; gap: 12px; cursor: pointer; width: 100%; }
+/* LOGIN SCREEN */
+#auth-container { text-align: center; }
+#auth-container h1 { color: var(--brand-black); font-size: 1.5rem; letter-spacing: 2px; margin-bottom: 8px; font-weight: 700; }
+#auth-container p { color: var(--text-muted); margin-bottom: 40px; font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
 
-/* Layout Logic */
+#login-btn { 
+    background: var(--brand-black);
+    color: white;
+    padding: 16px;
+    border-radius: 4px;
+    font-weight: 600;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.2s;
+}
+#login-btn:hover { background: var(--brand-orange); }
+#login-btn img { filter: brightness(0) invert(1); width: 18px; }
+
+/* DASHBOARD LOGIC */
+.header { margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid var(--brand-grey-light); }
 .dashboard-layout { display: flex; flex-direction: column; gap: 2rem; }
+.input-group { margin-bottom: 18px; }
+label { display: block; font-size: 0.7rem; font-weight: 700; color: var(--brand-black); text-transform: uppercase; margin-bottom: 6px; }
 
-/* Form Elements */
-.header { margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-.input-group { margin-bottom: 14px; }
-label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--brand-grey-dark); text-transform: uppercase; margin-bottom: 4px; }
-input, select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--brand-grey-light); }
-.btn-submit { width: 100%; padding: 14px; background: var(--brand-orange); color: white; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
+input, select { 
+    width: 100%; 
+    padding: 12px; 
+    border: 1px solid var(--brand-grey-border); 
+    border-radius: 4px; 
+    background: var(--brand-grey-light);
+    font-size: 0.9rem;
+}
+input:focus { outline: none; border-color: var(--brand-orange); background: white; }
 
-/* Stock View Elements */
-.search-row { display: flex; gap: 10px; margin-bottom: 15px; }
-.search-row input { flex: 1; }
-.stock-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: white; border: 1px solid var(--border); border-left: 5px solid var(--brand-grey-dark); margin-bottom: 6px; }
-.btn-use { background: var(--brand-black); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 700; font-size: 0.75rem; }
-.btn-logout { background: transparent; color: var(--text-muted); border: 1px solid var(--border); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; font-weight: 700; }
-
-/* Desktop Split Screen */
-@media (min-width: 950px) {
-    .container { max-width: 1100px; }
-    .dashboard-layout { flex-direction: row; align-items: flex-start; }
-    #material-form { flex: 1; border-right: 1px solid var(--border); padding-right: 2rem; }
-    #stock-view { flex: 1.5; margin-top: 0; }
+.btn-submit { 
+    width: 100%; 
+    padding: 16px; 
+    background: var(--brand-orange); 
+    color: white; 
+    border: none; 
+    border-radius: 4px; 
+    font-weight: 700; 
+    cursor: pointer; 
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.status-badge { background: var(--brand-grey-dark); color: white; font-size: 0.65rem; padding: 3px 8px; border-radius: 2px; font-weight: 700; }
+/* LIST ITEMS */
+.stock-item { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 15px; 
+    background: white; 
+    border: 1px solid var(--brand-grey-light); 
+    border-left: 4px solid var(--brand-black); 
+    margin-bottom: 8px; 
+}
+.stock-item:hover { border-left-color: var(--brand-orange); background: var(--brand-grey-light); }
+
+.btn-use { background: var(--brand-black); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 700; font-size: 0.7rem; }
+.btn-logout { background: transparent; color: var(--text-muted); border: 1px solid var(--brand-grey-border); padding: 6px 12px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; }
+
+/* RESPONSIVE DASHBOARD */
+@media (min-width: 950px) {
+    .container { max-width: 1150px; }
+    .dashboard-layout { flex-direction: row; align-items: flex-start; }
+    #material-form { flex: 1; border-right: 2px solid var(--brand-grey-light); padding-right: 2.5rem; }
+    #stock-view { flex: 1.5; }
+}
+
+.status-badge { background: var(--brand-black); color: white; font-size: 0.6rem; padding: 4px 8px; border-radius: 2px; text-transform: uppercase; }
 .footer-note { font-size: 0.7rem; color: var(--text-muted); text-align: center; }

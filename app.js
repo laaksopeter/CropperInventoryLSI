@@ -32,14 +32,12 @@ const sizeSearch = document.getElementById('search-size');
 let currentStock = [];
 
 loginBtn.onclick = () => signInWithPopup(auth, provider);
-logoutBtn.onclick = () => { if (confirm("Log out?")) signOut(auth); };
+logoutBtn.onclick = () => { if (confirm("Sign out of LNI Terminal?")) signOut(auth); };
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
         authContainer.style.display = 'none';
-        // Check window size to decide between flex or block
-        inventoryUI.style.display = window.innerWidth > 950 ? 'block' : 'block'; 
-        // Style.css handles the inner flex, so we just show the card
+        inventoryUI.style.display = 'block'; 
         userGreeting.innerText = `Worker: ${user.displayName}`;
     } else {
         authContainer.style.display = 'block';
@@ -48,18 +46,18 @@ onAuthStateChanged(auth, (user) => {
 });
 
 async function loadInventory(grade) {
-    inventoryList.innerHTML = "<p class='footer-note'>Refreshing stock...</p>";
+    inventoryList.innerHTML = "<p class='footer-note'>Querying system...</p>";
     thickSearch.value = ""; sizeSearch.value = "";
     try {
         const response = await fetch(`${SCRIPT_URL}?grade=${grade}`);
         currentStock = await response.json();
         renderInventory(currentStock);
-    } catch (err) { inventoryList.innerHTML = "<p class='footer-note'>Error.</p>"; }
+    } catch (err) { inventoryList.innerHTML = "<p class='footer-note'>Database Error.</p>"; }
 }
 
 function renderInventory(items) {
     inventoryList.innerHTML = "";
-    if (items.length === 0) { inventoryList.innerHTML = "<p class='footer-note'>Empty.</p>"; return; }
+    if (items.length === 0) { inventoryList.innerHTML = "<p class='footer-note'>No items found.</p>"; return; }
     items.forEach(item => {
         const div = document.createElement('div');
         div.className = "stock-item";
@@ -70,7 +68,8 @@ function renderInventory(items) {
                 <small style="color:var(--text-muted)">Notes: ${item.other || "N/A"}</small><br>
                 <small style="color:var(--brand-orange); font-weight:700;">ID: ${item.id}</small>
             </div>
-            <button class="btn-use" onclick="window.useSheet('${item.id}')">USE</button>`;
+            <button class="btn-use" onclick="window.useSheet('${item.id}')">USE</button>
+        `;
         inventoryList.appendChild(div);
     });
 }
@@ -86,7 +85,7 @@ sizeSearch.oninput = filterInventory;
 materialSelect.onchange = (e) => loadInventory(e.target.value);
 
 window.useSheet = async (id) => {
-    if (!confirm(`Remove ${id}?`)) return;
+    if (!confirm(`Mark ${id} as used?`)) return;
     await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "DELETE", id, item: materialSelect.value }) });
     loadInventory(materialSelect.value);
 };
@@ -107,5 +106,5 @@ form.onsubmit = async (e) => {
     await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
     form.reset();
     loadInventory(data.item);
-    submitBtn.innerText = "Add to Inventory"; submitBtn.disabled = false;
+    submitBtn.innerText = "Add Entry"; submitBtn.disabled = false;
 };
